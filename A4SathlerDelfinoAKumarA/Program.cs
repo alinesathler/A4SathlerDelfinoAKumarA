@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 //Aline Sathler Delfino & Ankit Kumar - Assignment 4
 //Name of Project: Characters for an Adventure Game
 //Purpose: C# console application to create and store records of characters for a simple adventure game. The program will track the name, character type, and the level of each character. The user will be able to add new characters, edit characters, delete characters, and view all characters stored in the program.
 //Revision History:
 //REV00 - 2023/11/13 - Initial version, adding and displaying characters
+//REV01 - 2023/11/14 - Deleting characters
 
 public static class Globals {
     public static List<string> characterName = new List<string>();
     public static List<string> characterType = new List<string>();
-    public static List<uint> characterLevel = new List<uint>();
+    public static List<uint> characterLevel = new List<uint>();  
 }
 
 namespace A4SathlerDelfinoAKumarA {
@@ -113,6 +116,89 @@ namespace A4SathlerDelfinoAKumarA {
             }
         }
 
+        //Method EditCharacter to edit a character
+        static void EditCharacter() {
+            string characterName;
+            uint menuChoice;
+            int index;
+
+            Console.Write("\nPlease enter character name you would like to edit: ");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
+            characterName = Console.ReadLine();
+            Console.ResetColor();   //Reset color
+
+            index = Globals.characterName.IndexOf(characterName); //Index where character is
+
+            if (index == -1) {  //Check if name doesn't exists
+                Console.WriteLine("Character not found.");
+            } else {
+                //Display character information
+                Console.WriteLine($"\nName\tType\tLevel");
+                Console.WriteLine($"{Globals.characterName[index]}\t{Globals.characterType[index]}\t{Globals.characterLevel[index]}");
+
+                do {
+                    //Calls method Menu nad give prompt, minimun and maximum menu
+                    menuChoice = Menu("1. Edit name\r\n2. Edit type\r\n3. Edit level\r\n4. Exit\r\n", 1, 4);
+
+                    switch (menuChoice) {
+                        case 1:
+                            //Call method to edit name
+
+                            break;
+                        case 2:
+                            //Call method to edit type
+
+                            break;
+                        case 3:
+                            //Call method to edit level
+
+                            break;
+                        case 4:
+                            Console.WriteLine("\nThe edition option will be closed.");
+                            break;
+                        default: throw new ArgumentOutOfRangeException(); //Throw error if input not between 1-4
+                    }
+
+                } while (menuChoice != 4);
+            }
+        }
+
+        //Method DeleteCharacter to delete a character
+        static void DeleteCharacter() {
+            string characterName;
+            int index;
+
+            Console.Write("\nPlease enter character name you would like to delete: ");
+
+            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
+            characterName = Console.ReadLine();
+            Console.ResetColor();   //Reset color
+
+            index = Globals.characterName.IndexOf(characterName); //Index where character is
+
+            if (index == -1) {  //Check if name doesn't exists
+                Console.WriteLine("Character not found.");
+            } else {
+                char confirmation;
+
+                Console.Write("Character found. Confirm delete (y/n)? "); //Confirm before deleting
+                confirmation = Console.ReadLine()[0];
+
+                if (confirmation == 'y') {
+                    Globals.characterName.Remove(characterName); //Delete name
+                    Globals.characterType.RemoveAt(index); //Delete type
+                    Globals.characterLevel.RemoveAt(index); //Delete level
+
+                    Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+                    Console.WriteLine("\nCharacter deleted.");
+                    Console.ResetColor();   //Reset color
+                } else if (confirmation != 'n') {
+                    throw new ArgumentOutOfRangeException(); //Throw error if input not y or n
+                }
+            }
+        }
+
         //Method DisplayCharacters to display all characters
         static void DisplayCharacters() {
             Console.WriteLine($"\nName\tType\tLevel");
@@ -139,11 +225,13 @@ namespace A4SathlerDelfinoAKumarA {
 
                             break;
                         case 2:
-                            Console.WriteLine();
+                            //Call method to edit a character
+                            EditCharacter();
 
                             break;
                         case 3:
-                            Console.WriteLine();
+                            //Call method to delete a character
+                            DeleteCharacter();
 
                             break;
                         case 4:
@@ -154,7 +242,7 @@ namespace A4SathlerDelfinoAKumarA {
                         case 5:
                             Console.WriteLine("\nThe program will be closed.");
                             break;
-                        default: throw new ArgumentOutOfRangeException();
+                        default: throw new ArgumentOutOfRangeException(); //Throw error if input not between 1-5
                     }
 
                 } while (menuChoice != 5);
