@@ -12,25 +12,54 @@ using System.Xml.Linq;
 //Revision History:
 //REV00 - 2023/11/13 - Initial version, adding and displaying characters
 //REV01 - 2023/11/14 - Deleting characters
+//REV02 - 2023/11/14 - Editing characters and refactoring methods
 
 public static class Globals {
     public static List<string> characterName = new List<string>();
     public static List<string> characterType = new List<string>();
-    public static List<uint> characterLevel = new List<uint>();  
+    public static List<uint> characterLevel = new List<uint>();
 }
 
 namespace A4SathlerDelfinoAKumarA {
     internal class Program {
+        //Auxiliary methods
+
+        //User's input
+        //Method UserInputUInt to read an uint
+        static uint UserInputUInt(string prompt) {
+            uint userInput;
+
+            Console.Write(prompt); //Ask the user an input
+
+            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
+            userInput = Convert.ToUInt16(Console.ReadLine()); //Read the input
+            Console.ResetColor();   //Reset color
+
+            return userInput;
+        }
+
+        //User's input
+        //Method UserInputString to read a string
+        static string UserInputString(string prompt) {
+            string userInput;
+
+            Console.Write(prompt); //Ask the user an input
+
+            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
+            userInput = Console.ReadLine(); //Read the input
+            Console.ResetColor();   //Reset color
+
+            return userInput;
+        }
+
         //Method Menu to read user input
         static uint Menu(string prompt, uint menuMin, uint menuMax) {
             uint menuChoice;
 
-            Console.WriteLine("\n" + prompt);
-            Console.Write("Please, enter your choice: ");
+            Console.WriteLine("\n" + prompt); //Printing the menu options
 
-            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-            menuChoice = Convert.ToUInt16(Console.ReadLine());
-            Console.ResetColor();   //Reset color
+            //Calls method UserInputUInt and give prompt
+            menuChoice = UserInputUInt("Please, enter your choice: ");
 
             //Checking if input in the range
             if (menuChoice < menuMin || menuChoice > menuMax) {
@@ -40,66 +69,167 @@ namespace A4SathlerDelfinoAKumarA {
             }
         }
 
-        //Method AddNewCharacter to add new character
-        static void AddNewCharacter() {
-            string characterName, characterType;
+        //Method AddName to add a character name
+        static string AddName() {
+            string characterName = "";
+
+            //Adding a name
+            //Calls method UserInputString and give prompt
+            characterName = UserInputString("Please enter character name: ");
+
+            if (string.IsNullOrEmpty(characterName)) {  //Check is name is blanket
+                throw new ArgumentNullException("Character name cannot be null.");   //Throw ArgumentNullException
+            } else if (Globals.characterName.Contains(characterName)) { //Check if name already exists
+                throw new ArgumentException("Character already exists.");   //Throw ArgumentException
+            }
+
+            return characterName;
+        }
+
+        //Method AddType to add a character type
+        static string AddType() {
+            string characterType = "";
+
+            //Adding a type
+            //Calls method UserInputString and give prompt
+            characterType = UserInputString("Please enter character type: ");
+
+            if (string.IsNullOrEmpty(characterType)) {  //Check is type is blanket
+                throw new ArgumentNullException("Character type cannot be null.");   //Throw ArgumentNullException
+            }
+
+            return characterType;
+        }
+
+        //Method AddLevel to add a character level
+        static uint AddLevel() {
             uint characterLevel = 0;
-            bool isName = false, isType = false, isLevel = false;
+
+            //Adding a level
+            //Calls method UserInputUInt and give prompt
+            characterLevel = UserInputUInt("Please enter character level (10 - 25): ");
+
+            if (characterLevel < 10 || characterLevel > 25) {  //Check is level is in the correct range
+                throw new ArgumentOutOfRangeException("Character level must be between 10 - 25.");
+            }
+
+            return characterLevel;
+        }
+
+        //Method EditName to edit character name
+        static void EditName(int index) {
+            string characterName;
 
             try {
                 //Adding a name
-                Console.Write("Please enter character name: ");
+                //Calls method AddName to add a character name
+                characterName = AddName();
 
-                Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-                characterName = Console.ReadLine();
+                //Replacing character name
+                Globals.characterName[index] = characterName;
+
+                //Confirmation that the character name was edited
+                Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+                Console.WriteLine("\nThe name of the character has been changed.");
                 Console.ResetColor();   //Reset color
 
-                if (characterName == "") {  //Check is name is blanket
-                    throw new ArgumentNullException("Character name cannot be null.");   //Throw ArgumentNullException
-                } else if (Globals.characterName.Contains(characterName)) { //Check if name already exists
-                    throw new ArgumentException("Character already exists.");   //Throw ArgumentException
-                } else {
-                    isName = true; //Character name is ok
-                }
+            } catch (ArgumentNullException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                EditName(index); //Calls EditName again
+            } catch (ArgumentException ex) {
+                Console.WriteLine(ex.Message + " Let's try again.\n"); //Print error message
+                EditName(index); //Calls EditName again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                EditName(index); //Calls EditName again
+            }
+        }
+
+        //Method EditType to edit character type
+        static void EditType(int index) {
+            string characterType;
+
+            try {
+                //Adding a typer
+                //Calls method AddType to add a character type
+                characterType = AddType();
+
+                //Replacing character name
+                Globals.characterType[index] = characterType;
+
+                //Confirmation that the character name was edited
+                Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+                Console.WriteLine("\nThe type of the character has been changed.");
+                Console.ResetColor();   //Reset color
+
+            } catch (ArgumentNullException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                EditType(index); //Calls EditType again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                EditType(index); //Calls EditType again
+            }
+        }
+
+        //Method EditType to edit character type
+        static void EditLevel(int index) {
+            uint characterLevel;
+
+            try {
+                //Adding a level
+                //Calls method AddLevel to add a character level
+                characterLevel = AddLevel();
+
+                //Replacing character name
+                Globals.characterLevel[index] = characterLevel;
+
+                //Confirmation that the character name was edited
+                Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+                Console.WriteLine("\nThe level of the character has been changed.");
+                Console.ResetColor();   //Reset color
+
+            } catch (ArgumentOutOfRangeException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                EditLevel(index); //Calls EditLevel again
+            } catch (FormatException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                EditLevel(index); //Calls EditLevel again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                EditLevel(index); //Calls EditLevel again
+            }
+        }
+
+        //Main Methods
+        //Method AddNewCharacter to add new character
+        static void AddNewCharacter() {
+            string characterName, characterType;
+            uint characterLevel;
+
+            try {
+                //Adding a name
+                //Calls method AddName to add a character name
+                characterName = AddName();
+                Globals.characterName.Add(characterName);   //Add character name
 
                 //Adding a type
-                Console.Write("Please enter character type: ");
-
-                Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-                characterType = Console.ReadLine();
-                Console.ResetColor();   //Reset color
-
-                if (characterType == "") {  //Check is type is blanket
-                    throw new ArgumentNullException("Character type cannot be null.");   //Throw ArgumentNullException
-                } else {
-                    isType = true; //Character type is ok
-                }
-
+                //Calls method AddType to add a character type
+                characterType = AddType();
+                Globals.characterType.Add(characterType);   //Add character type
 
                 //Adding a level
-                Console.Write("Please enter character level (10 - 25): ");
+                //Calls method AddLevel to add a character level
+                characterLevel = AddLevel();
+                Globals.characterLevel.Add(characterLevel);   //Add character level
 
-                Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-                characterLevel = Convert.ToUInt16(Console.ReadLine());
+                //Confirmation that the character was added
+                Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+                Console.WriteLine("\nYour record has been saved.");
                 Console.ResetColor();   //Reset color
-
-                if (characterLevel < 10 || characterLevel > 25) {  //Check is level is in the correct range
-                    throw new ArgumentOutOfRangeException("Character level must be between 10 - 25.");
-                } else {
-                    isLevel = true; //Character level is ok
-                }
-
-
-                //Adding character in the list
-                if (isName && isType && isLevel) {
-                    Globals.characterName.Add(characterName);   //Add character name
-                    Globals.characterType.Add(characterType);   //Add character type
-                    Globals.characterLevel.Add(characterLevel);   //Add character level
-
-                    Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
-                    Console.WriteLine("\nYour record has been saved.");
-                    Console.ResetColor();   //Reset color
-                }
             } catch (ArgumentNullException ex) {
                 Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
                 AddNewCharacter(); //Calls AddNewCharacter again
@@ -107,7 +237,11 @@ namespace A4SathlerDelfinoAKumarA {
                 Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
                 AddNewCharacter(); //Calls AddNewCharacter again
             } catch (ArgumentException ex) {
-                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                Console.WriteLine(ex.Message + " Let's try again.\n"); //Print error message
+                AddNewCharacter(); //Calls AddNewCharacter again
+            } catch (FormatException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
                 AddNewCharacter(); //Calls AddNewCharacter again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
@@ -122,11 +256,8 @@ namespace A4SathlerDelfinoAKumarA {
             uint menuChoice;
             int index;
 
-            Console.Write("\nPlease enter character name you would like to edit: ");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-            characterName = Console.ReadLine();
-            Console.ResetColor();   //Reset color
+            //Calls method UserInputString and give prompt
+            characterName = UserInputString("\nPlease enter character name you would like to edit: ");
 
             index = Globals.characterName.IndexOf(characterName); //Index where character is
 
@@ -144,15 +275,15 @@ namespace A4SathlerDelfinoAKumarA {
                     switch (menuChoice) {
                         case 1:
                             //Call method to edit name
-
+                            EditName(index);
                             break;
                         case 2:
                             //Call method to edit type
-
+                            EditType(index);
                             break;
                         case 3:
                             //Call method to edit level
-
+                            EditLevel(index);
                             break;
                         case 4:
                             Console.WriteLine("\nThe edition option will be closed.");
@@ -169,23 +300,20 @@ namespace A4SathlerDelfinoAKumarA {
             string characterName;
             int index;
 
-            Console.Write("\nPlease enter character name you would like to delete: ");
-
-            Console.ForegroundColor = ConsoleColor.Yellow;  //Change text color the yellow
-            characterName = Console.ReadLine();
-            Console.ResetColor();   //Reset color
+            //Calls method UserInputString and give prompt
+            characterName = UserInputString("\nPlease enter character name you would like to delete: ");
 
             index = Globals.characterName.IndexOf(characterName); //Index where character is
 
             if (index == -1) {  //Check if name doesn't exists
                 Console.WriteLine("Character not found.");
             } else {
-                char confirmation;
+                string confirmation;
 
-                Console.Write("Character found. Confirm delete (y/n)? "); //Confirm before deleting
-                confirmation = Console.ReadLine()[0];
+                //Calls method UserInputString and give prompt
+                confirmation = UserInputString("Character found. Confirm delete (y/n)? "); //Confirm before deleting
 
-                if (confirmation == 'y') {
+                if (confirmation.ToLower() == "y") {
                     Globals.characterName.Remove(characterName); //Delete name
                     Globals.characterType.RemoveAt(index); //Delete type
                     Globals.characterLevel.RemoveAt(index); //Delete level
@@ -193,7 +321,7 @@ namespace A4SathlerDelfinoAKumarA {
                     Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
                     Console.WriteLine("\nCharacter deleted.");
                     Console.ResetColor();   //Reset color
-                } else if (confirmation != 'n') {
+                } else if (confirmation.ToLower() != "n") {
                     throw new ArgumentOutOfRangeException(); //Throw error if input not y or n
                 }
             }
@@ -201,7 +329,7 @@ namespace A4SathlerDelfinoAKumarA {
 
         //Method DisplayCharacters to display all characters
         static void DisplayCharacters() {
-            Console.WriteLine($"\nName\tType\tLevel");
+            Console.WriteLine($"Name\tType\tLevel");
             for (int i = 0; i < Globals.characterName.Count; i++) {
                 Console.WriteLine($"{Globals.characterName[i]}\t{Globals.characterType[i]}\t{Globals.characterLevel[i]}");
             }
@@ -246,7 +374,7 @@ namespace A4SathlerDelfinoAKumarA {
                     }
 
                 } while (menuChoice != 5);
-                
+
 
             } catch (ArgumentOutOfRangeException) {
                 Console.ResetColor();   //Reset color
