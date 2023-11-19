@@ -13,6 +13,7 @@ using System.Xml.Linq;
 //REV00 - 2023/11/13 - Initial version, adding and displaying characters
 //REV01 - 2023/11/14 - Deleting characters
 //REV02 - 2023/11/14 - Editing characters and refactoring methods
+//REV03 - 2023/11/19 - Test Cases
 
 public static class Globals {
     public static List<string> characterName = new List<string>();
@@ -173,7 +174,7 @@ namespace A4SathlerDelfinoAKumarA {
             }
         }
 
-        //Method EditType to edit character type
+        //Method EditLevel to edit character level
         static void EditLevel(int index) {
             uint characterLevel;
 
@@ -195,7 +196,11 @@ namespace A4SathlerDelfinoAKumarA {
                 EditLevel(index); //Calls EditLevel again
             } catch (FormatException) {
                 Console.ResetColor();   //Reset color
-                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
+                EditLevel(index); //Calls EditLevel again
+            } catch (OverflowException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
                 EditLevel(index); //Calls EditLevel again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
@@ -214,16 +219,17 @@ namespace A4SathlerDelfinoAKumarA {
                 //Adding a name
                 //Calls method AddName to add a character name
                 characterName = AddName();
-                Globals.characterName.Add(characterName);   //Add character name
 
                 //Adding a type
                 //Calls method AddType to add a character type
                 characterType = AddType();
-                Globals.characterType.Add(characterType);   //Add character type
 
                 //Adding a level
                 //Calls method AddLevel to add a character level
                 characterLevel = AddLevel();
+
+                Globals.characterName.Add(characterName);   //Add character name
+                Globals.characterType.Add(characterType);   //Add character type
                 Globals.characterLevel.Add(characterLevel);   //Add character level
 
                 //Confirmation that the character was added
@@ -241,7 +247,11 @@ namespace A4SathlerDelfinoAKumarA {
                 AddNewCharacter(); //Calls AddNewCharacter again
             } catch (FormatException) {
                 Console.ResetColor();   //Reset color
-                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                Console.WriteLine("Input not valid. Let's try again.\n"); //Print error message
+                AddNewCharacter(); //Calls AddNewCharacter again
+            } catch (OverflowException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Input not valid. Let's try again.\n"); //Print error message
                 AddNewCharacter(); //Calls AddNewCharacter again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
@@ -321,7 +331,9 @@ namespace A4SathlerDelfinoAKumarA {
                     Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
                     Console.WriteLine("\nCharacter deleted.");
                     Console.ResetColor();   //Reset color
-                } else if (confirmation.ToLower() != "n") {
+                } else if (confirmation.ToLower() == "n") {
+                    Console.WriteLine("Delete canceled.");
+                } else {
                     throw new ArgumentOutOfRangeException(); //Throw error if input not y or n
                 }
             }
