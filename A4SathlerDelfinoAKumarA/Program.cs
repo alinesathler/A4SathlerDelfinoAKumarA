@@ -14,6 +14,7 @@ using System.Xml.Linq;
 //REV01 - 2023/11/14 - Deleting characters
 //REV02 - 2023/11/14 - Editing characters and refactoring methods
 //REV03 - 2023/11/19 - Test Cases
+//REV04 - 2023/11/21 - Refactoring methods
 
 public static class Globals {
     public static List<string> characterName = new List<string>();
@@ -117,8 +118,8 @@ namespace A4SathlerDelfinoAKumarA {
             return characterLevel;
         }
 
-        //Method EditName to edit character name
-        static void EditName(int index) {
+        //Method Name to add character name
+        static void Name() {
             string characterName;
 
             try {
@@ -127,55 +128,127 @@ namespace A4SathlerDelfinoAKumarA {
                 characterName = AddName();
 
                 //Replacing character name
+                Globals.characterName.Add(characterName);
+            } catch (ArgumentNullException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                Name(); //Calls Name again
+            } catch (ArgumentException ex) {
+                Console.WriteLine(ex.Message + " Let's try again.\n"); //Print error message
+                Name(); //Calls Name again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                Name(); //Calls Name again
+            }
+        }
+
+        //Method Name to edit character name
+        static void Name(int index) {
+            string characterName;
+
+            try {
+                //Adding a name
+                //Calls method AddName to add a character name
+                characterName = AddName();
+
+                //Adding character name
                 Globals.characterName[index] = characterName;
 
                 //Confirmation that the character name was edited
                 Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
                 Console.WriteLine("\nThe name of the character has been changed.");
                 Console.ResetColor();   //Reset color
-
             } catch (ArgumentNullException ex) {
                 Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
-                EditName(index); //Calls EditName again
+                Name(index); //Calls Name again
             } catch (ArgumentException ex) {
                 Console.WriteLine(ex.Message + " Let's try again.\n"); //Print error message
-                EditName(index); //Calls EditName again
+                Name(index); //Calls Name again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
                 Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
-                EditName(index); //Calls EditName again
+                Name(index); //Calls Name again
             }
         }
 
-        //Method EditType to edit character type
-        static void EditType(int index) {
+        //Method Type to add character type
+        static void Type() {
             string characterType;
 
             try {
-                //Adding a typer
+                //Adding a type
                 //Calls method AddType to add a character type
                 characterType = AddType();
 
-                //Replacing character name
+                //Adding character type
+                Globals.characterType.Add(characterType);
+            } catch (ArgumentNullException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                Type(); //Calls Type again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                Type(); //Calls Type again
+            }
+        }
+
+        //Method Type to edit character type
+        static void Type(int index) {
+            string characterType;
+
+            try {
+                //Adding a type
+                //Calls method AddType to add a character type
+                characterType = AddType();
+
+                //Replacing character type
                 Globals.characterType[index] = characterType;
 
                 //Confirmation that the character name was edited
                 Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
                 Console.WriteLine("\nThe type of the character has been changed.");
                 Console.ResetColor();   //Reset color
-
             } catch (ArgumentNullException ex) {
                 Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
-                EditType(index); //Calls EditType again
+                Type(index); //Calls EditType again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
                 Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
-                EditType(index); //Calls EditType again
+                Type(index); //Calls EditType again
             }
         }
 
-        //Method EditLevel to edit character level
-        static void EditLevel(int index) {
+        //Method Level to add character level
+        static void Level() {
+            uint characterLevel;
+
+            try {
+                //Adding a level
+                //Calls method AddLevel to add a character level
+                characterLevel = AddLevel();
+
+                //Adding character name
+                Globals.characterLevel.Add(characterLevel);
+            } catch (ArgumentOutOfRangeException ex) {
+                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
+                Level(); //Calls Level again
+            } catch (FormatException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
+                Level(); //Calls Level again
+            } catch (OverflowException) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
+                Level(); //Calls Level again
+            } catch (Exception) {
+                Console.ResetColor();   //Reset color
+                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
+                Level(); //Calls Level again
+            }
+        }
+
+        //Method Level to edit character level
+        static void Level(int index) {
             uint characterLevel;
 
             try {
@@ -190,74 +263,43 @@ namespace A4SathlerDelfinoAKumarA {
                 Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
                 Console.WriteLine("\nThe level of the character has been changed.");
                 Console.ResetColor();   //Reset color
-
             } catch (ArgumentOutOfRangeException ex) {
                 Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
-                EditLevel(index); //Calls EditLevel again
+                Level(index); //Calls Level again
             } catch (FormatException) {
                 Console.ResetColor();   //Reset color
                 Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
-                EditLevel(index); //Calls EditLevel again
+                Level(index); //Calls Level again
             } catch (OverflowException) {
                 Console.ResetColor();   //Reset color
                 Console.WriteLine("Invalid input. Let's try again.\n"); //Print error message
-                EditLevel(index); //Calls EditLevel again
+                Level(index); //Calls Level again
             } catch (Exception) {
                 Console.ResetColor();   //Reset color
                 Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
-                EditLevel(index); //Calls EditLevel again
+                Level(index); //Calls Level again
             }
         }
 
         //Main Methods
         //Method AddNewCharacter to add new character
         static void AddNewCharacter() {
-            string characterName, characterType;
-            uint characterLevel;
+            //Adding a name
+            //Calls method Name to add a character name
+            Name();
 
-            try {
-                //Adding a name
-                //Calls method AddName to add a character name
-                characterName = AddName();
+            //Adding a type
+            //Calls method Type to add a character type
+            Type();
 
-                //Adding a type
-                //Calls method AddType to add a character type
-                characterType = AddType();
+            //Adding a level
+            //Calls method Level to add a character level
+            Level();
 
-                //Adding a level
-                //Calls method AddLevel to add a character level
-                characterLevel = AddLevel();
-
-                Globals.characterName.Add(characterName);   //Add character name
-                Globals.characterType.Add(characterType);   //Add character type
-                Globals.characterLevel.Add(characterLevel);   //Add character level
-
-                //Confirmation that the character was added
-                Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
-                Console.WriteLine("\nYour record has been saved.");
-                Console.ResetColor();   //Reset color
-            } catch (ArgumentNullException ex) {
-                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            } catch (ArgumentOutOfRangeException ex) {
-                Console.WriteLine(ex.ParamName + " Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            } catch (ArgumentException ex) {
-                Console.WriteLine(ex.Message + " Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            } catch (FormatException) {
-                Console.ResetColor();   //Reset color
-                Console.WriteLine("Input not valid. Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            } catch (OverflowException) {
-                Console.ResetColor();   //Reset color
-                Console.WriteLine("Input not valid. Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            } catch (Exception) {
-                Console.ResetColor();   //Reset color
-                Console.WriteLine("Something went wrong. Let's try again.\n"); //Print error message
-                AddNewCharacter(); //Calls AddNewCharacter again
-            }
+            //Confirmation that the character was added
+            Console.ForegroundColor = ConsoleColor.Green;  //Change text color the green
+            Console.WriteLine("\nYour record has been saved.");
+            Console.ResetColor();   //Reset color
         }
 
         //Method EditCharacter to edit a character
@@ -285,15 +327,15 @@ namespace A4SathlerDelfinoAKumarA {
                     switch (menuChoice) {
                         case 1:
                             //Call method to edit name
-                            EditName(index);
+                            Name(index);
                             break;
                         case 2:
                             //Call method to edit type
-                            EditType(index);
+                            Type(index);
                             break;
                         case 3:
                             //Call method to edit level
-                            EditLevel(index);
+                            Level(index);
                             break;
                         case 4:
                             Console.WriteLine("\nThe edition option will be closed.");
@@ -389,8 +431,6 @@ namespace A4SathlerDelfinoAKumarA {
 
 
             } catch (ArgumentOutOfRangeException) {
-                Console.ResetColor();   //Reset color
-
                 Console.WriteLine("\nInput out of the range.");
             } catch (OverflowException) {
                 Console.ResetColor();   //Reset color
