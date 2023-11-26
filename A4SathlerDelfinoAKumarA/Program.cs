@@ -15,6 +15,7 @@ using System.Xml.Linq;
 //REV02 - 2023/11/14 - Editing characters and refactoring methods
 //REV03 - 2023/11/19 - Test Cases
 //REV04 - 2023/11/21 - Refactoring methods
+//REV05 - 2023/11/25 - Highlighting messages in red and green
 
 public static class Globals {
     public static List<string> characterName = new List<string>();
@@ -314,13 +315,15 @@ namespace A4SathlerDelfinoAKumarA {
             index = Globals.characterName.IndexOf(characterName); //Index where character is
 
             if (index == -1) {  //Check if name doesn't exists
-                Console.WriteLine("Character not found.");
+                Console.ForegroundColor = ConsoleColor.Red;  //Change text color the red
+                Console.WriteLine("\nCharacter not found.");
+                Console.ResetColor();   //Reset color
             } else {
-                //Display character information
-                Console.WriteLine($"\nName\tType\tLevel");
-                Console.WriteLine($"{Globals.characterName[index]}\t{Globals.characterType[index]}\t{Globals.characterLevel[index]}");
-
                 do {
+                    //Display character information
+                    Console.WriteLine($"\nName\tType\tLevel");
+                    Console.WriteLine($"{Globals.characterName[index]}\t{Globals.characterType[index]}\t{Globals.characterLevel[index]}");
+
                     //Calls method Menu nad give prompt, minimun and maximum menu
                     menuChoice = Menu("1. Edit name\r\n2. Edit type\r\n3. Edit level\r\n4. Exit\r\n", 1, 4);
 
@@ -342,7 +345,6 @@ namespace A4SathlerDelfinoAKumarA {
                             break;
                         default: throw new ArgumentOutOfRangeException(); //Throw error if input not between 1-4
                     }
-
                 } while (menuChoice != 4);
             }
         }
@@ -358,7 +360,9 @@ namespace A4SathlerDelfinoAKumarA {
             index = Globals.characterName.IndexOf(characterName); //Index where character is
 
             if (index == -1) {  //Check if name doesn't exists
-                Console.WriteLine("Character not found.");
+                Console.ForegroundColor = ConsoleColor.Red;  //Change text color the red
+                Console.WriteLine("\nCharacter not found.");
+                Console.ResetColor();   //Reset color
             } else {
                 string confirmation;
 
@@ -374,7 +378,9 @@ namespace A4SathlerDelfinoAKumarA {
                     Console.WriteLine("\nCharacter deleted.");
                     Console.ResetColor();   //Reset color
                 } else if (confirmation.ToLower() == "n") {
-                    Console.WriteLine("Delete canceled.");
+                    Console.ForegroundColor = ConsoleColor.Red;  //Change text color the red
+                    Console.WriteLine("\nDelete canceled.");
+                    Console.ResetColor();   //Reset color
                 } else {
                     throw new ArgumentOutOfRangeException(); //Throw error if input not y or n
                 }
@@ -383,7 +389,7 @@ namespace A4SathlerDelfinoAKumarA {
 
         //Method DisplayCharacters to display all characters
         static void DisplayCharacters() {
-            Console.WriteLine($"Name\tType\tLevel");
+            Console.WriteLine($"\nName\tType\tLevel");
             for (int i = 0; i < Globals.characterName.Count; i++) {
                 Console.WriteLine($"{Globals.characterName[i]}\t{Globals.characterType[i]}\t{Globals.characterLevel[i]}");
             }
